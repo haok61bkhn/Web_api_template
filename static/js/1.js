@@ -1,36 +1,20 @@
 function upload_image(){
   $("#input").unbind("change").bind("change",function(){ // bind: kiểm tra sự kiện là change
     let fileData=$(this).prop("files")[0];
-    let math =["image/png","image/jpg","image/jpeg"];// kiểm tra file ảnh thuộc định dạng nào
-    let limit=1048576; //byte=1MB
-
-    if($.inArray(fileData.type, math) === -1 ){
-      alertify.notify("Kiểu file không hợp lệ, vui lòng chọn ảnh khác","error",7);
-      $(this).val(null) // refesh lại thẻ avt 
-      return false
-    }
-
-    if(fileData.size >limit){
-      alertify.notify("Ảnh tối đa 1MB","error",7);
-      $(this).val(null) // refesh lại thẻ avt 
-      return false
-    }
-    // console.log(fileData);
-
     if(typeof (FileReader) != "undefined"){
         let imagePreview=$("#image-edit-profile");
         imagePreview.empty();// làm rỗng ;
         let fileReader=new FileReader();
         fileReader.onload=function(element){
-          let image_show = `<img src="${element.target.result}" id="image-show" class="" alt="Images" style="display: block; width: 350px; height: 250px; margin:auto">`
+          $("#cancel_crop_image").html(`<input style = "display:none" type="text" value="${element.target.result}" id="src_base64" name="image">`)
+          let image_show = `<img src="${element.target.result}" id="image-show" class="" alt="Images" style="display: block; max-width: 350px; max-height : 50vh; margin:auto; padding : 2px; border : 1px solid white">`
           let image_main = `<img src="${element.target.result}" id="image-main" class="" alt="Images" style="display: none">`
+          
           imagePreview.append(image_show)
           imagePreview.append(image_main)
         }
         imagePreview.show()
         fileReader.readAsDataURL(fileData);
-    } else{
-        alertify.notify("Trình duyệt của bạn không hỗ trọ FileReader","error",7);
     }
   })
 }
@@ -56,19 +40,6 @@ function plate_detect(){
     })
 }
 
-function volume_bar(){
-  let brightness = document.getElementById("brightness");
-  let contrast = document.getElementById("contrast");
-  
-  brightness.oninput = function() {
-    $("#image-show").css("filter", `brightness(${this.value}%)`)
-  }
-
-  contrast.oninput = function() {
-    $("#image-show").css("filter", `contrast(${this.value}%)`)
-  }
-
-}
 function received(){
   $("#received-image-plate").unbind("click").bind("click", function(){
       let data = $("img#image-show-plate").attr("src")
@@ -80,15 +51,12 @@ function received(){
       imagePreview.append(image_show)
       imagePreview.show()
       $("#cancel_crop_image").empty()
-	console.log(data)
       $("#cancel_crop_image").append(`<input style = "display:none" type="text" value="${data}" id="src_base64" name= "image">`)
       $("#cancel_crop_image").show()
   })
 }
 $(document).ready(function(){
-  cancel_crop_image()
-  volume_bar()
-  // upload_image()
+  upload_image()
   plate_detect()
   received()
   

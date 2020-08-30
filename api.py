@@ -28,13 +28,13 @@ def save_image(image):
 
 @app.route("/", methods=['GET','POST']) # webapi
 def upload_file():
-    
-    bg=time.time()
     if request.method == "GET":
       return render_template("index.html")
     if request.method == 'POST': 
         image=request.form["image"]
+     
         try:
+            #________________________process________________________________________
             image=image.split(",")[1]
             image=base64.b64decode(image)
             image= np.frombuffer(image, dtype=np.uint8)
@@ -44,9 +44,8 @@ def upload_file():
             #test result is image
             res_img = image.copy()
             b64_res_img = convert_tob64(res_img)
-            
-            return render_template("index.html")  
-        
+            restext="abc"
+            return render_template("index.html",orimg=convert_tob64(image),resimg=b64_res_img,result=restext)  
         
         except:
           print("No image selected")
@@ -68,6 +67,6 @@ def process():
 
 if __name__ == "__main__":
     #predict = Process()
-    app.run(host="0.0.0.0",port=2345,debug=True,threaded=True)
+    app.run(host="0.0.0.0",port=1234,debug=True,threaded=True)
 
 
